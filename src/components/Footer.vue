@@ -3,7 +3,7 @@
     <Transition name="fade" mode="out-in">
       <div v-if="!store.playerState || !store.playerLrcShow" class="power">
         <span>
-          &copy; {{ fullYear }} &nbsp;FanciVoid&nbsp;&middot;&nbsp;Based on
+          &copy; {{ fullYear }} &nbsp;Fancilonely&nbsp;&middot;&nbsp;Based on
           <a href="https://github.com/imsyy/home" target="_blank">imsyy/home</a>
         </span>
       </div>
