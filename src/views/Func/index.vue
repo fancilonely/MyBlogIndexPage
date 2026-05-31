@@ -1,45 +1,38 @@
 <template>
-  <!-- 功能区域 -->
   <div :class="store.mobileFuncState ? 'function mobile' : 'function'">
-    <Transition name="func-slide">
-      <!-- 点击左侧简介后：直接显示时光胶囊，不再额外套 box-panel -->
-      <TimeCapsule
-        v-if="showCapsule"
-        key="capsule"
-        class="capsule-panel"
-      />
+    <TimeCapsule
+      v-if="showCapsule"
+      class="capsule-panel"
+    />
 
-      <!-- 默认功能区：音乐 + 当前时间 -->
-      <el-row
-        v-else
-        key="default"
-        class="default-panel"
-        :gutter="20"
-      >
-        <el-col :span="12">
-          <div class="left">
-            <Music v-if="playerHasId" />
-          </div>
-        </el-col>
+    <el-row
+      v-else
+      class="default-panel"
+      :gutter="20"
+    >
+      <el-col :span="12">
+        <div class="left">
+          <Music v-if="playerHasId" />
+        </div>
+      </el-col>
 
-        <el-col :span="12">
-          <div class="right time-card">
-            <div class="time">
-              <div class="date">
-                <span>{{ currentTime.year }}&nbsp;年&nbsp;</span>
-                <span>{{ currentTime.month }}&nbsp;月&nbsp;</span>
-                <span>{{ currentTime.day }}&nbsp;日&nbsp;</span>
-                <span class="sm-hidden">{{ currentTime.weekday }}</span>
-              </div>
+      <el-col :span="12">
+        <div class="right time-card">
+          <div class="time">
+            <div class="date">
+              <span>{{ currentTime.year }}&nbsp;年&nbsp;</span>
+              <span>{{ currentTime.month }}&nbsp;月&nbsp;</span>
+              <span>{{ currentTime.day }}&nbsp;日&nbsp;</span>
+              <span class="sm-hidden">{{ currentTime.weekday }}</span>
+            </div>
 
-              <div class="text">
-                <span>{{ currentTime.hour }}:{{ currentTime.minute }}:{{ currentTime.second }}</span>
-              </div>
+            <div class="text">
+              <span>{{ currentTime.hour }}:{{ currentTime.minute }}:{{ currentTime.second }}</span>
             </div>
           </div>
-        </el-col>
-      </el-row>
-    </Transition>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -208,34 +201,6 @@ onBeforeUnmount(() => {
   }
 }
 
-/* 右侧模块滑动替换动画 */
-.func-slide-enter-active,
-.func-slide-leave-active {
-  transition:
-    opacity 0.16s ease,
-    transform 0.16s ease;
-}
-
-.func-slide-enter-from {
-  opacity: 0;
-  transform: translateX(16px);
-}
-
-.func-slide-leave-to {
-  opacity: 0;
-  transform: translateX(-16px);
-}
-
-/*
-  离场元素绝对定位，避免时光胶囊收起时继续占位。
-  这能减少“先残留一下再变成时间”的视觉问题。
-*/
-.func-slide-leave-active {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
 
 @media (max-width: 720px) {
   .function {
