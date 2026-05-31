@@ -1,7 +1,7 @@
 <template>
   <!-- 功能区域 -->
   <div :class="store.mobileFuncState ? 'function mobile' : 'function'">
-    <Transition name="func-slide" mode="out-in">
+    <Transition name="func-slide">
       <!-- 点击左侧简介后：显示时光胶囊 -->
       <div v-if="store.boxOpenState" key="capsule" class="box-panel">
         <TimeCapsule />
@@ -185,7 +185,6 @@ onBeforeUnmount(() => {
 
   .box-panel {
     width: 100%;
-    animation: fade 0.5s;
   }
 }
 
@@ -193,18 +192,25 @@ onBeforeUnmount(() => {
 .func-slide-enter-active,
 .func-slide-leave-active {
   transition:
-    opacity 0.28s ease,
-    transform 0.28s ease;
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .func-slide-enter-from {
   opacity: 0;
-  transform: translateX(28px);
+  transform: translateX(18px);
 }
 
 .func-slide-leave-to {
   opacity: 0;
-  transform: translateX(-28px);
+  transform: translateX(-18px);
+}
+
+.func-slide-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 @media (max-width: 720px) {
