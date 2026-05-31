@@ -2,13 +2,20 @@
   <!-- 功能区域 -->
   <div :class="store.mobileFuncState ? 'function mobile' : 'function'">
     <Transition name="func-slide">
-      <!-- 点击左侧简介后：显示时光胶囊 -->
-      <div v-if="store.boxOpenState" key="capsule" class="box-panel">
-        <TimeCapsule />
-      </div>
+      <!-- 点击左侧简介后：直接显示时光胶囊，不再额外套 box-panel -->
+      <TimeCapsule
+        v-if="showCapsule"
+        key="capsule"
+        class="capsule-panel"
+      />
 
       <!-- 默认功能区：音乐 + 当前时间 -->
-      <el-row v-else key="default" :gutter="20">
+      <el-row
+        v-else
+        key="default"
+        class="default-panel"
+        :gutter="20"
+      >
         <el-col :span="12">
           <div class="left">
             <Music v-if="playerHasId" />
@@ -24,6 +31,7 @@
                 <span>{{ currentTime.day }}&nbsp;日&nbsp;</span>
                 <span class="sm-hidden">{{ currentTime.weekday }}</span>
               </div>
+
               <div class="text">
                 <span>{{ currentTime.hour }}:{{ currentTime.minute }}:{{ currentTime.second }}</span>
               </div>
@@ -36,7 +44,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { getCurrentTime } from "@/utils/getTime";
 import { mainStore } from "@/store";
 import Music from "@/components/Music.vue";
@@ -50,6 +58,11 @@ const timeInterval = ref(null);
 
 // 播放器 id
 const playerHasId = import.meta.env.VITE_SONG_ID;
+
+// 桌面端才允许显示时光胶囊
+const showCapsule = computed(() => {
+  return store.boxOpenState && store.getInnerWidth >= 721;
+});
 
 // 更新时间
 const updateTimeData = () => {
@@ -68,6 +81,8 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .function {
+  position: relative;
+  width: 100%;
   min-height: 120px;
   height: auto;
   display: flex;
@@ -76,7 +91,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
 
   &.mobile {
-    .el-row {
+    .default-panel {
       .el-col {
         &:nth-of-type(1) {
           display: contents;
@@ -89,7 +104,7 @@ onBeforeUnmount(() => {
     }
   }
 
-  .el-row {
+  .default-panel {
     height: 120px;
     width: 100%;
     margin: 0 !important;
@@ -183,7 +198,12 @@ onBeforeUnmount(() => {
     }
   }
 
-  .box-panel {
+  /*
+    这里的 class 是直接加在 <TimeCapsule /> 组件上的。
+    Vue 会把 class 透传到 TimeCapsule 的根元素，
+    所以不需要再套一层 box-panel。
+  */
+  .capsule-panel {
     width: 100%;
   }
 }
@@ -192,20 +212,24 @@ onBeforeUnmount(() => {
 .func-slide-enter-active,
 .func-slide-leave-active {
   transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
+    opacity 0.16s ease,
+    transform 0.16s ease;
 }
 
 .func-slide-enter-from {
   opacity: 0;
-  transform: translateX(18px);
+  transform: translateX(16px);
 }
 
 .func-slide-leave-to {
   opacity: 0;
-  transform: translateX(-18px);
+  transform: translateX(-16px);
 }
 
+/*
+  离场元素绝对定位，避免时光胶囊收起时继续占位。
+  这能减少“先残留一下再变成时间”的视觉问题。
+*/
 .func-slide-leave-active {
   position: absolute;
   top: 0;
@@ -216,10 +240,6 @@ onBeforeUnmount(() => {
 @media (max-width: 720px) {
   .function {
     min-height: 0;
-
-    .box-panel {
-      display: none;
-    }
   }
 }
 </style>
