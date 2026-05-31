@@ -15,7 +15,7 @@
         <div class="text">
           <p class="portal-title">Forever Fantasy</p>
           <p class="portal-description">
-            A personal digital space for projects, notes, and creative experiments.
+            已然遥远的空白幻想之城
           </p>
         </div>
       </div>
@@ -29,7 +29,7 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        Main Gate
+        >> 进入我的世界 <<
       </a>
     </div>
   </div>
