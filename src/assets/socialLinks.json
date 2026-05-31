@@ -9,6 +9,12 @@
     "name": "Email",
     "icon": "/images/icon/email.png",
     "tip": "Signal Contact",
-    "url": "mailto:haotianzhu1115@foxmail.com"
+    "url": "mailto:fancivoid@gmail.com"
+  },
+  {
+    "name": "Twitter/X",
+    "icon": "/images/icon/twitter.png",
+    "tip": "Twitter / X",
+    "url": "https://x.com/fancivoid"
   }
 ]

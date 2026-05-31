@@ -3,25 +3,5 @@
     "icon": "Compass",
     "name": "Void Gate",
     "link": "https://www.fancivoid.asia"
-  },
-  {
-    "icon": "Blog",
-    "name": "GitHub",
-    "link": "https://github.com/fancilonely"
-  },
-  {
-    "icon": "LaptopCode",
-    "name": "Project Archive",
-    "link": "#"
-  },
-  {
-    "icon": "Book",
-    "name": "Research Notes",
-    "link": "#"
-  },
-  {
-    "icon": "Cloud",
-    "name": "Signal Contact",
-    "link": "mailto:haotianzhu1115@foxmail.com"
   }
 ]

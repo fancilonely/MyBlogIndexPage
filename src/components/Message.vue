@@ -1,24 +1,27 @@
 <template>
   <!-- 基本信息 -->
   <div class="message">
-    <!-- Logo -->
+    <!-- Logo / Title -->
     <div class="logo">
       <img v-if="siteLogo" class="logo-img" :src="siteLogo" alt="logo" />
-      <div :class="{ name: true, long: siteUrl[0].length >= 6 }">
-        <span class="bg">{{ descriptionText.hello }}</span>
-        <span class="sm">{{ siteUrl[0] ? `.${siteUrl[1]}` : '' }}</span>
+      <div class="name">
+        <span class="bg">梦幻空白</span>
       </div>
     </div>
+
     <!-- 简介 -->
-    <div class="description cards" @click="changeBox">
+    <div class="description cards">
       <div class="content">
         <div class="text">
-          <p class="portal-title">{{ descriptionText.text }}</p>
-          <p class="portal-description">{{ descriptionSecondary }}</p>
-          <p class="portal-note">{{ descriptionNote }}</p>
+          <p class="portal-title">Forever Fantasy</p>
+          <p class="portal-description">
+            A personal digital space for projects, notes, and creative experiments.
+          </p>
         </div>
       </div>
     </div>
+
+    <!-- 主入口 -->
     <div class="actions">
       <a
         class="primary-btn"
@@ -26,78 +29,15 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        Void Gate / Main Site
+        Main Gate
       </a>
-      <div class="secondary-links">
-        <a href="https://github.com/fancilonely" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="#">Project Archive (coming soon)</a>
-        <a href="#">Research Notes (coming soon)</a>
-        <a href="mailto:haotianzhu1115@foxmail.com">Signal Contact</a>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { Error } from "@icon-park/vue-next";
-import { mainStore } from "@/store";
-const store = mainStore();
-
-// 主页站点logo
+// 主页站点 logo
 const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
-// 站点链接
-const siteUrl = computed(() => {
-  const url = import.meta.env.VITE_SITE_URL || "fancivoid.asia";
-  if (url.startsWith("http://") || url.startsWith("https://")) {
-    const urlFormat = url.replace(/^(https?:\/\/)/, "");
-    return urlFormat.split(".");
-  }
-  return url.split(".");
-});
-
-// 简介区域文字
-const descriptionText = reactive({
-  hello: import.meta.env.VITE_DESC_HELLO || "FanciVoid",
-  text:
-    import.meta.env.VITE_DESC_TEXT ||
-    "A personal digital space for projects, notes, and creative experiments.",
-});
-const descriptionSecondary =
-  import.meta.env.VITE_DESC_HELLO_OTHER || "Enter the void.";
-const descriptionNote =
-  import.meta.env.VITE_DESC_TEXT_OTHER || "A quiet archive at the edge of the net.";
-
-// 切换右侧功能区
-const changeBox = () => {
-  if (store.getInnerWidth >= 721) {
-    store.boxOpenState = !store.boxOpenState;
-  } else {
-    ElMessage({
-      message: "当前页面宽度不足以开启盒子",
-      grouping: true,
-      icon: h(Error, {
-        theme: "filled",
-        fill: "#efefef",
-      }),
-    });
-  }
-};
-
-// 监听状态变化
-watch(
-  () => store.boxOpenState,
-  (value) => {
-    if (value) {
-      descriptionText.hello = import.meta.env.VITE_DESC_HELLO_OTHER || "Enter the void.";
-      descriptionText.text = import.meta.env.VITE_DESC_TEXT_OTHER || "Return anytime to explore the archive.";
-    } else {
-      descriptionText.hello = import.meta.env.VITE_DESC_HELLO || "FanciVoid";
-      descriptionText.text =
-        import.meta.env.VITE_DESC_TEXT ||
-        "A personal digital space for projects, notes, and creative experiments.";
-    }
-  },
-);
 </script>
 
 <style lang="scss" scoped>
@@ -107,60 +47,49 @@ watch(
     flex-direction: row;
     align-items: center;
     animation: fade 0.5s;
-    max-width: 460px;
+    max-width: 560px;
+
     .logo-img {
+      width: 112px;
+      height: 112px;
       border-radius: 50%;
-      width: 120px;
+      flex-shrink: 0;
     }
+
     .name {
-      width: 100%;
-      padding-left: 22px;
-      transform: translateY(-8px);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      width: auto;
+      padding-left: 24px;
+      transform: none;
       white-space: nowrap;
       overflow: visible;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
       .bg {
-        font-family: "Pacifico-Regular";
-        font-size: 4.2rem;
-        line-height: 1;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 4rem;
+        line-height: 1.1;
         color: #f9f9ff;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
       }
 
       .sm {
-        margin-left: 8px;
-        font-size: 1.6rem;
-        color: #d7dbff;
-        @media (min-width: 721px) and (max-width: 789px) {
-          display: none;
-        }
+        display: none;
       }
-    }
-    @media (max-width: 768px) {
-      .logo-img {
-        width: 100px;
-      }
-      .name {
-        height: 128px;
-        .bg {
-          font-size: 4.5rem;
-        }
-      }
-    }
-
-    @media (max-width: 720px) {
-      max-width: 100%;
     }
   }
 
   .description {
-    padding: 1.4rem 1.3rem;
-    margin-top: 3rem;
-    max-width: 480px;
+    width: 100%;
+    max-width: 500px;
+    padding: 1.8rem 1.6rem;
+    margin-top: 2.4rem;
     animation: fade 0.5s;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(6, 10, 22, 0.62);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+    background: rgba(6, 10, 22, 0.68);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(22px);
     transition: transform 0.25s ease, border-color 0.25s ease;
 
@@ -170,63 +99,56 @@ watch(
     }
 
     .content {
-      display: flex;
-      justify-content: space-between;
+      display: block;
 
       .text {
         margin: 0;
-        line-height: 1.8;
-        margin-right: auto;
         transition: opacity 0.2s;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
         .portal-title {
           font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-          font-size: 1.6rem;
-          letter-spacing: 0.01em;
-          margin-bottom: 0.4rem;
-          color: #f9f9ff;
-          font-weight: 600;
+          font-size: 2.2rem;
+          line-height: 1.2;
+          margin-bottom: 0.8rem;
+          color: #ffffff;
+          font-weight: 800;
         }
 
         .portal-description {
-          font-size: 1rem;
-          color: #d7dbff;
-          margin-bottom: 0.6rem;
-          max-width: 400px;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: 1.25rem;
+          line-height: 1.75;
+          color: rgba(255, 255, 255, 0.92);
+          font-weight: 600;
+          max-width: 440px;
         }
 
         .portal-note {
-          font-size: 0.95rem;
-          color: #90a3ff;
-          opacity: 0.9;
+          display: none;
         }
       }
     }
-    @media (max-width: 720px) {
-      max-width: 100%;
-      pointer-events: none;
-    }
   }
+
   .actions {
     margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    max-width: 480px;
+    max-width: 500px;
 
     .primary-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      min-height: 52px;
-      background: rgba(86, 124, 255, 0.92);
+      min-height: 54px;
+      background: rgba(86, 124, 255, 0.94);
       color: #fff;
       border-radius: 999px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
+      font-weight: 800;
+      letter-spacing: 0.04em;
       transition: transform 0.2s ease, background 0.2s ease;
       text-decoration: none;
+      box-shadow: 0 16px 40px rgba(45, 83, 220, 0.35);
     }
 
     .primary-btn:hover {
@@ -235,64 +157,71 @@ watch(
     }
 
     .secondary-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
+      display: none;
     }
+  }
 
-    .secondary-links a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 0;
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(9, 12, 28, 0.6);
-      color: #d7dbff;
-      text-decoration: none;
-      transition: background 0.25s ease, transform 0.2s ease;
-      white-space: nowrap;
-      font-size: 1rem;
-    }
+  @media (max-width: 720px) {
+    .logo {
+      max-width: 100%;
 
-    .secondary-links a:hover {
-      transform: translateY(-1px);
-      background: rgba(26, 32, 58, 0.8);
-    }
-
-    @media (max-width: 720px) {
-      .secondary-links {
-        flex-direction: column;
+      .logo-img {
+        width: 88px;
+        height: 88px;
       }
-      .secondary-links a {
-        width: 100%;
-        min-width: auto;
+
+      .name {
+        padding-left: 18px;
+
+        .bg {
+          font-size: 2.8rem;
+        }
+      }
+    }
+
+    .description {
+      max-width: 100%;
+      margin-top: 2rem;
+      padding: 1.5rem 1.3rem;
+
+      .content {
+        .text {
+          .portal-title {
+            font-size: 1.8rem;
+          }
+
+          .portal-description {
+            font-size: 1.08rem;
+            line-height: 1.7;
+          }
+        }
+      }
+    }
+
+    .actions {
+      max-width: 100%;
+
+      .primary-btn {
+        min-height: 50px;
       }
     }
   }
-  // @media (max-width: 390px) {
-  //   .logo {
-  //     flex-direction: column;
-  //     .logo-img {
-  //       display: none;
-  //     }
-  //     .name {
-  //       margin-left: 0;
-  //       height: auto;
-  //       transform: none;
-  //       text-align: center;
-  //       .bg {
-  //         font-size: 3.5rem;
-  //       }
-  //       .sm {
-  //         font-size: 1.4rem;
-  //       }
-  //     }
-  //   }
-  //   .description {
-  //     margin-top: 2.5rem;
-  //   }
-  // }
+
+  @media (max-width: 430px) {
+    .logo {
+      .logo-img {
+        width: 76px;
+        height: 76px;
+      }
+
+      .name {
+        padding-left: 14px;
+
+        .bg {
+          font-size: 2.2rem;
+        }
+      }
+    }
+  }
 }
 </style>
