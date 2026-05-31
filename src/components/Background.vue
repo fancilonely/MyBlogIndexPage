@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
     height: 100%;
     object-fit: cover;
     backface-visibility: hidden;
-    filter: blur(20px) brightness(0.3);
+    filter: blur(20px) brightness(0.25);
     transition:
       filter 0.3s,
       transform 0.3s;
@@ -117,8 +117,8 @@ onBeforeUnmount(() => {
     top: 0;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.5) 100%),
-      radial-gradient(rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0.3) 166%);
+    background-image: radial-gradient(rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.65) 100%),
+      radial-gradient(rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0.45) 166%);
 
     transition: 1.5s;
     &.hidden {

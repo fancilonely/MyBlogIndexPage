@@ -4,7 +4,7 @@
     <!-- Logo -->
     <div class="logo">
       <img v-if="siteLogo" class="logo-img" :src="siteLogo" alt="logo" />
-      <div :class="{ name: true, 'text-hidden': true, long: siteUrl[0].length >= 6 }">
+      <div :class="{ name: true, long: siteUrl[0].length >= 6 }">
         <span class="bg">{{ descriptionText.hello }}</span>
         <span class="sm">{{ siteUrl[0] ? `.${siteUrl[1]}` : '' }}</span>
       </div>
@@ -116,15 +116,21 @@ watch(
       width: 100%;
       padding-left: 22px;
       transform: translateY(-8px);
-      font-family: "Pacifico-Regular";
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      white-space: nowrap;
+      overflow: visible;
 
       .bg {
-        font-size: 5rem;
+        font-family: "Pacifico-Regular";
+        font-size: 4.2rem;
+        line-height: 1;
+        color: #f9f9ff;
       }
 
       .sm {
-        margin-left: 6px;
-        font-size: 2rem;
+        margin-left: 8px;
+        font-size: 1.6rem;
+        color: #d7dbff;
         @media (min-width: 721px) and (max-width: 789px) {
           display: none;
         }
@@ -174,24 +180,25 @@ watch(
         transition: opacity 0.2s;
 
         .portal-title {
-          font-family: "Pacifico-Regular";
-          font-size: 2.45rem;
-          letter-spacing: 0.02em;
-          margin-bottom: 0.6rem;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: 1.6rem;
+          letter-spacing: 0.01em;
+          margin-bottom: 0.4rem;
           color: #f9f9ff;
+          font-weight: 600;
         }
 
         .portal-description {
-          font-size: 1.05rem;
+          font-size: 1rem;
           color: #d7dbff;
-          margin-bottom: 0.75rem;
-          max-width: 360px;
+          margin-bottom: 0.6rem;
+          max-width: 400px;
         }
 
         .portal-note {
-          font-size: 0.97rem;
+          font-size: 0.95rem;
           color: #90a3ff;
-          opacity: 0.88;
+          opacity: 0.9;
         }
       }
     }
@@ -237,14 +244,16 @@ watch(
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 140px;
-      padding: 12px 18px;
+      min-width: 0;
+      padding: 10px 16px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(9, 12, 28, 0.52);
+      background: rgba(9, 12, 28, 0.6);
       color: #d7dbff;
       text-decoration: none;
       transition: background 0.25s ease, transform 0.2s ease;
+      white-space: nowrap;
+      font-size: 1rem;
     }
 
     .secondary-links a:hover {

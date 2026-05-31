@@ -57,7 +57,7 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .function {
-  height: 165px;
+  height: 120px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -102,34 +102,38 @@ onBeforeUnmount(() => {
       width: 100%;
       height: 100%;
     }
-    .right {
-      padding: 20px;
+      .right {
+      padding: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       animation: fade 0.5s;
       .time {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         text-align: center;
+        opacity: 0.9;
         .date {
           text-overflow: ellipsis;
           overflow-x: hidden;
           white-space: nowrap;
+          font-size: 0.95rem;
+          color: #d7dbff;
         }
         .text {
-          margin-top: 10px;
-          font-size: 3.25rem;
-          letter-spacing: 2px;
-          font-family: "UnidreamLED";
+          margin-top: 6px;
+          font-size: 1.8rem;
+          letter-spacing: 1px;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          color: #f5f7ff;
         }
         @media (min-width: 1201px) and (max-width: 1280px) {
-          font-size: 1rem;
+          font-size: 0.95rem;
         }
         @media (min-width: 911px) and (max-width: 992px) {
-          font-size: 1rem;
+          font-size: 0.95rem;
           .text {
-            font-size: 2.75rem;
+            font-size: 1.6rem;
           }
         }
       }

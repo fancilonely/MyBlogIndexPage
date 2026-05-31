@@ -7,15 +7,12 @@
     </div>
     <!-- 功能区 -->
     <Func />
-    <!-- 网站链接 -->
-    <Link />
   </div>
 </template>
 
 <script setup>
 import { mainStore } from "@/store";
 import Func from "@/views/Func/index.vue";
-import Link from "@/components/Links.vue";
 const store = mainStore();
 
 // 站点链接
@@ -34,7 +31,7 @@ const siteUrl = computed(() => {
 <style lang="scss" scoped>
 .right {
   // flex: 1 0 0%;
-  width: 50%;
+  width: 35%;
   margin-left: 0.75rem;
   .logo {
     width: 100%;
