@@ -9,13 +9,17 @@
       @error.once="imgLoadError"
       @animationend="imgAnimationEnd"
     />
-    <div :class="store.backgroundShow ? 'gray hidden' : 'gray'" />
+
+    <!-- 浅色柔和遮罩：避免黑边，不做夜间压暗 -->
+    <div :class="store.backgroundShow ? 'overlay hidden' : 'overlay'" />
+
     <Transition name="fade" mode="out-in">
       <a
         v-if="store.backgroundShow"
         class="down"
         :href="bgUrl"
         target="_blank"
+        rel="noopener noreferrer"
       >
         下载壁纸
       </a>
@@ -24,6 +28,8 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount, h } from "vue";
+import { ElMessage } from "element-plus";
 import { mainStore } from "@/store";
 import { Error } from "@icon-park/vue-next";
 
@@ -32,29 +38,25 @@ const bgUrl = ref(null);
 const imgTimeout = ref(null);
 const emit = defineEmits(["loadComplete"]);
 
-// 本地背景图路径：请把你的替换图放在 public/images/background1.jpg
+// 固定本地背景图：替换图片时只需要覆盖 public/images/background1.jpg
 const bgPath = "/images/background1.jpg";
 const fallbackBg = "/images/background1.jpg";
 
-// 更换壁纸链接
+// 固定加载单张背景
 const changeBg = () => {
   bgUrl.value = bgPath;
 };
 
 // 图片加载完成
 const imgLoadComplete = () => {
-  imgTimeout.value = setTimeout(
-    () => {
-      store.setImgLoadStatus(true);
-    },
-    Math.floor(Math.random() * (600 - 300 + 1)) + 300,
-  );
+  imgTimeout.value = setTimeout(() => {
+    store.setImgLoadStatus(true);
+  }, 300);
 };
 
 // 图片动画完成
 const imgAnimationEnd = () => {
   console.log("壁纸加载且动画完成");
-  // 加载完成事件
   emit("loadComplete");
 };
 
@@ -65,31 +67,31 @@ const imgLoadError = () => {
     message: "壁纸加载失败，已临时切换回默认",
     icon: h(Error, {
       theme: "filled",
-      fill: "#efefef",
+      fill: "#4f7cff",
     }),
   });
   bgUrl.value = fallbackBg;
 };
 
 onMounted(() => {
-  // 加载固定首页背景
   changeBg();
 });
 
 onBeforeUnmount(() => {
-  clearTimeout(imgTimeout.value);
+  if (imgTimeout.value) clearTimeout(imgTimeout.value);
 });
 </script>
 
 <style lang="scss" scoped>
 .cover {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   transition: 0.25s;
   z-index: -1;
+  overflow: hidden;
+  background: #f4f6fb;
 
   &.show {
     z-index: 1;
@@ -97,59 +99,109 @@ onBeforeUnmount(() => {
 
   .bg {
     position: absolute;
-    left: 0;
-    top: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     backface-visibility: hidden;
-    filter: blur(20px) brightness(0.25);
+
+    /*
+      原版问题：
+      brightness(0.25) 会把背景压得非常黑；
+      这里改成轻微提亮、轻微柔化，适合浅色毛玻璃界面。
+    */
+    filter: brightness(0.92) saturate(1.04) contrast(0.98);
+    transform: scale(1.02);
+
     transition:
-      filter 0.3s,
-      transform 0.3s;
-    animation: fade-blur-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    animation-delay: 0.45s;
+      filter 0.3s ease,
+      transform 0.3s ease;
+
+    animation: bg-soft-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation-delay: 0.25s;
   }
-  .gray {
+
+  /*
+    浅色遮罩：
+    去掉黑色径向边缘，避免四周发黑。
+    只保留很轻的白色雾面和底部柔和渐变，让浅色卡片更自然。
+  */
+  .overlay {
     opacity: 1;
     position: absolute;
-    left: 0;
-    top: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.65) 100%),
-      radial-gradient(rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0.45) 166%);
 
-    transition: 1.5s;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(244, 246, 251, 0.12) 0%,
+        rgba(255, 255, 255, 0.04) 45%,
+        rgba(255, 255, 255, 0.08) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.06) 0%,
+        rgba(255, 255, 255, 0.02) 48%,
+        rgba(244, 246, 251, 0.18) 100%
+      );
+
+    transition: opacity 1.2s ease;
+
     &.hidden {
       opacity: 0;
-      transition: 1.5s;
     }
   }
+
   .down {
-    font-size: 16px;
-    color: white;
+    font-size: 15px;
+    color: #172033;
     position: absolute;
     bottom: 30px;
     left: 0;
     right: 0;
     margin: 0 auto;
-    display: block;
-    padding: 20px 26px;
-    border-radius: 8px;
-    background-color: #00000030;
-    width: 120px;
-    height: 30px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.66);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 12px 32px rgba(35, 45, 80, 0.16);
+    backdrop-filter: blur(16px);
+    width: fit-content;
+    min-width: 112px;
+    height: 38px;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-decoration: none;
+    font-weight: 700;
+
     &:hover {
-      transform: scale(1.05);
-      background-color: #00000060;
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.78);
+      color: #4f7cff;
+      text-decoration: none;
     }
+
     &:active {
-      transform: scale(1);
+      transform: translateY(0);
     }
+  }
+}
+
+@keyframes bg-soft-in {
+  from {
+    opacity: 0;
+    filter: blur(12px) brightness(0.9) saturate(1.02);
+    transform: scale(1.08);
+  }
+
+  to {
+    opacity: 1;
+    filter: brightness(0.92) saturate(1.04) contrast(0.98);
+    transform: scale(1.02);
   }
 }
 </style>

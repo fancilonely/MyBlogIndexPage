@@ -9,13 +9,14 @@
       </div>
     </div>
 
-    <!-- 简介 -->
-    <div class="description cards">
+    <!-- 简介：点击后切换右侧时光胶囊 -->
+    <div class="description cards" @click="changeBox">
       <div class="content">
         <div class="text">
           <p class="portal-title">Forever Fantasy</p>
-          <p class="portal-description">
-            已然遥远的空白幻想之城
+          <p class="portal-description">已然遥远的空白幻想之城</p>
+          <p class="portal-hint">
+            {{ store.boxOpenState ? "点击返回时间面板" : "点击查看时光胶囊" }}
           </p>
         </div>
       </div>
@@ -29,15 +30,38 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        >> 进入我的世界 <<
+        &gt;&gt; 进入我的世界 &lt;&lt;
       </a>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ElMessage } from "element-plus";
+import { Error } from "@icon-park/vue-next";
+import { h } from "vue";
+import { mainStore } from "@/store";
+
+const store = mainStore();
+
 // 主页站点 logo
 const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
+
+// 切换右侧功能区：桌面端切换，移动端提示
+const changeBox = () => {
+  if (store.getInnerWidth >= 721) {
+    store.boxOpenState = !store.boxOpenState;
+  } else {
+    ElMessage({
+      message: "当前页面宽度不足以开启盒子",
+      grouping: true,
+      icon: h(Error, {
+        theme: "filled",
+        fill: "#4f7cff",
+      }),
+    });
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -73,10 +97,6 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
         letter-spacing: 0.04em;
         text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
       }
-
-      .sm {
-        display: none;
-      }
     }
   }
 
@@ -86,16 +106,21 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
     padding: 1.8rem 1.6rem;
     margin-top: 2.4rem;
     animation: fade 0.5s;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(6, 10, 22, 0.68);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(22px);
-    transition: transform 0.25s ease, border-color 0.25s ease;
+    cursor: pointer;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 18px 50px rgba(35, 45, 80, 0.18);
+    backdrop-filter: blur(16px);
+    transition:
+      transform 0.25s ease,
+      background-color 0.25s ease,
+      border-color 0.25s ease;
 
     &:hover {
       transform: translateY(-2px);
-      border-color: rgba(115, 155, 255, 0.22);
+      background: rgba(255, 255, 255, 0.76);
+      border-color: rgba(255, 255, 255, 0.72);
     }
 
     .content {
@@ -107,25 +132,26 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
         .portal-title {
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
           font-size: 2.2rem;
           line-height: 1.2;
           margin-bottom: 0.8rem;
-          color: #ffffff;
+          color: #172033;
           font-weight: 800;
         }
 
         .portal-description {
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
           font-size: 1.25rem;
           line-height: 1.75;
-          color: rgba(255, 255, 255, 0.92);
+          color: rgba(23, 32, 51, 0.82);
           font-weight: 600;
           max-width: 440px;
         }
 
-        .portal-note {
-          display: none;
+        .portal-hint {
+          margin-top: 0.8rem;
+          font-size: 0.9rem;
+          color: rgba(79, 124, 255, 0.88);
+          font-weight: 700;
         }
       }
     }
@@ -146,7 +172,9 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
       border-radius: 999px;
       font-weight: 800;
       letter-spacing: 0.04em;
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease;
       text-decoration: none;
       box-shadow: 0 16px 40px rgba(45, 83, 220, 0.35);
     }
@@ -154,10 +182,7 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
     .primary-btn:hover {
       transform: translateY(-1px);
       background: rgba(106, 144, 255, 0.98);
-    }
-
-    .secondary-links {
-      display: none;
+      text-decoration: none;
     }
   }
 
@@ -183,6 +208,7 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
       max-width: 100%;
       margin-top: 2rem;
       padding: 1.5rem 1.3rem;
+      pointer-events: none;
 
       .content {
         .text {
@@ -193,6 +219,10 @@ const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
           .portal-description {
             font-size: 1.08rem;
             line-height: 1.7;
+          }
+
+          .portal-hint {
+            display: none;
           }
         }
       }

@@ -1,9 +1,10 @@
 <template>
-  <div class="time-capsule">
+  <div class="time-capsule cards">
     <div class="title">
-      <hourglass-full theme="two-tone" size="24" :fill="['#efefef', '#00000020']" />
+      <hourglass-full theme="two-tone" size="22" :fill="['#4f7cff', '#d7ddff']" />
       <span>时光胶囊</span>
     </div>
+
     <div v-if="timeData" class="all-capsule">
       <div v-for="(item, tag, index) in timeData" :key="index" class="capsule-item">
         <div class="item-title">
@@ -16,10 +17,16 @@
             剩余&nbsp;{{ item.remaining }}&nbsp;{{ tag === "day" ? "小时" : "天" }}
           </span>
         </div>
-        <el-progress :text-inside="true" :stroke-width="20" :percentage="parseFloat(item.percentage)" />
+
+        <el-progress
+          :text-inside="true"
+          :stroke-width="18"
+          :percentage="parseFloat(item.percentage)"
+        />
       </div>
+
       <!-- 建站日期 -->
-      <div v-if="store.siteStartShow" class="capsule-item start">
+      <div class="capsule-item start">
         <div class="item-title">{{ startDateText }}</div>
       </div>
     </div>
@@ -27,38 +34,45 @@
 </template>
 
 <script setup>
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { HourglassFull } from "@icon-park/vue-next";
 import { getTimeCapsule, siteDateStatistics } from "@/utils/getTime.js";
-import { mainStore } from "@/store";
-const store = mainStore();
 
 // 进度条数据
 const timeData = ref(getTimeCapsule());
-const startDate = ref(import.meta.env.VITE_SITE_START);
-const startDateText = ref(null);
+
+// 固定建站日期：2024-01-29
+const startDate = new Date("2024-01-29T00:00:00");
+const startDateText = ref(siteDateStatistics(startDate));
 const timeInterval = ref(null);
 
 onMounted(() => {
   timeInterval.value = setInterval(() => {
     timeData.value = getTimeCapsule();
-    if (startDate.value) startDateText.value = siteDateStatistics(new Date(startDate.value));
+    startDateText.value = siteDateStatistics(startDate);
   }, 1000);
 });
 
 onBeforeUnmount(() => {
-  clearInterval(timeInterval.value);
+  if (timeInterval.value) clearInterval(timeInterval.value);
 });
 </script>
 
 <style lang="scss" scoped>
 .time-capsule {
   width: 100%;
+  padding: 1rem 1.1rem;
+  color: #172033;
+
   .title {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 0.2rem 0 1.5rem;
-    font-size: 1.1rem;
+    margin: 0.2rem 0 1rem;
+    color: #172033;
+    font-size: 1.05rem;
+    font-weight: 800;
+
     .i-icon {
       display: flex;
       justify-content: center;
@@ -66,30 +80,70 @@ onBeforeUnmount(() => {
       margin-right: 6px;
     }
   }
+
   .all-capsule {
     .capsule-item {
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
+
       .item-title {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        margin: 1rem 0rem 0.5rem 0rem;
-        font-size: 0.95rem;
+        gap: 0.8rem;
+        margin: 0.8rem 0 0.45rem;
+        color: rgba(23, 32, 51, 0.82);
+        font-size: 0.86rem;
+        line-height: 1.4;
+
+        strong {
+          margin: 0 0.15rem;
+          color: #4f7cff;
+          font-weight: 800;
+        }
+
         .remaining {
-          opacity: 0.6;
-          font-size: 0.85rem;
-          font-style: oblique;
+          color: rgba(23, 32, 51, 0.58);
+          font-size: 0.8rem;
+          font-style: normal;
+          white-space: nowrap;
         }
       }
+
+      :deep(.el-progress-bar__outer) {
+        background-color: rgba(23, 32, 51, 0.1);
+      }
+
+      :deep(.el-progress-bar__inner) {
+        background: linear-gradient(
+          90deg,
+          rgba(79, 124, 255, 0.78),
+          rgba(137, 161, 255, 0.9)
+        );
+      }
+
+      :deep(.el-progress-bar__innerText) {
+        color: #ffffff;
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
       &:last-child {
         margin-bottom: 0;
       }
+
       &.start {
+        margin-top: 0.2rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(23, 32, 51, 0.1);
+
         .item-title {
           justify-content: center;
-          opacity: 0.8;
-          font-size: 0.85rem;
+          margin: 0;
+          color: rgba(23, 32, 51, 0.7);
+          font-size: 0.82rem;
+          font-weight: 700;
+          text-align: center;
         }
       }
     }

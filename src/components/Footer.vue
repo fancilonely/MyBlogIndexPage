@@ -53,32 +53,57 @@ const siteUrl = computed(() => {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 46px;
-  line-height: 46px;
+  height: 42px;
+  line-height: 42px;
   text-align: center;
   z-index: 0;
   font-size: 14px;
-  // 文字不换行
   word-break: keep-all;
   white-space: nowrap;
+  color: rgba(23, 32, 51, 0.82);
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.42);
+
   .power {
     animation: fade 0.3s;
+
+    span {
+      color: rgba(23, 32, 51, 0.82);
+    }
+
+    a {
+      color: #4f7cff;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        color: #2f5cff;
+        text-decoration: underline;
+      }
+    }
   }
+
   .lrc {
     padding: 0 20px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    color: rgba(23, 32, 51, 0.82);
+
     .lrc-all {
       width: 98%;
       display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: center;
+
       .lrc-text {
         margin: 0 8px;
+        color: rgba(23, 32, 51, 0.82);
       }
+
       .i-icon {
         width: 18px;
         height: 18px;
@@ -86,26 +111,32 @@ const siteUrl = computed(() => {
       }
     }
   }
+
   &.blur {
-    backdrop-filter: blur(10px);
-    background: rgb(0 0 0 / 25%);
-    font-size: 16px;
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(16px);
+    font-size: 14px;
   }
+
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity 0.15s ease-in-out;
   }
+
   @media (max-width: 720px) {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+
     &.blur {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
   }
+
   @media (max-width: 560px) {
     .c-hidden {
       display: none;
     }
   }
+
   @media (max-width: 480px) {
     .hidden {
       display: none;
