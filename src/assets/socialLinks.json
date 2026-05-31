@@ -1,0 +1,14 @@
+[
+  {
+    "name": "GitHub",
+    "icon": "/images/icon/github.png",
+    "tip": "Follow the code",
+    "url": "https://github.com/fancilonely"
+  },
+  {
+    "name": "Email",
+    "icon": "/images/icon/email.png",
+    "tip": "Signal Contact",
+    "url": "mailto:haotianzhu1115@foxmail.com"
+  }
+]
