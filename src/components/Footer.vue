@@ -3,7 +3,16 @@
     <Transition name="fade" mode="out-in">
       <div v-if="!store.playerState || !store.playerLrcShow" class="power">
         <!-- Edit this footer text to add ICP filing number or custom copyright text. -->
-        <span>© 2026 梦幻空白 · Based on imsyy/home</span>
+        <span>
+          © 2026 梦幻空白 · Based on
+          <a
+            href="https://github.com/imsyy/home"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            imsyy/home
+          </a>
+        </span>
       </div>
       <div v-else class="lrc">
         <Transition name="fade" mode="out-in">
