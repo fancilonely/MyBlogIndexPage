@@ -3,6 +3,8 @@
   <Loading />
   <!-- 壁纸 -->
   <Background @loadComplete="loadComplete" />
+  <!-- 轻量背景粒子 -->
+  <FloatingParticles />
   <!-- 主界面 -->
   <Transition name="fade" mode="out-in">
     <main id="main" v-if="store.imgLoadStatus">
@@ -42,6 +44,7 @@ import Loading from "@/components/Loading.vue";
 import MainLeft from "@/views/Main/Left.vue";
 import MainRight from "@/views/Main/Right.vue";
 import Background from "@/components/Background.vue";
+import FloatingParticles from "@/components/FloatingParticles.vue";
 import Footer from "@/components/Footer.vue";
 import Box from "@/views/Box/index.vue";
 import MoreSet from "@/views/MoreSet/index.vue";
@@ -133,6 +136,7 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 2;
   transform: scale(1.2);
   transition: transform 0.3s;
   animation: fade-blur-main-in 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;

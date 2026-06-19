@@ -30,18 +30,18 @@ const socialTip = ref(defaultTip);
 
 <style lang="scss" scoped>
 .social {
-  margin-top: 1rem;
+  margin-top: 0.95rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: 460px;
   width: 100%;
-  min-height: 42px;
+  min-height: 40px;
   padding: 0 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 12px 36px rgba(35, 45, 80, 0.14);
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  box-shadow: 0 12px 30px rgba(35, 45, 80, 0.1);
   backdrop-filter: blur(16px);
   animation: fade 0.5s;
   transition:
@@ -50,40 +50,40 @@ const socialTip = ref(defaultTip);
     box-shadow 0.3s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.74);
+    background: rgba(239, 245, 255, 0.72);
     transform: translateY(-1px);
-    box-shadow: 0 16px 42px rgba(35, 45, 80, 0.18);
+    box-shadow: 0 16px 38px rgba(35, 45, 80, 0.14);
   }
 
   .link {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
+    justify-content: flex-start;
+    gap: 6px;
 
     a {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       transition:
         transform 0.2s ease,
         background 0.2s ease;
 
       &:hover {
-        background: rgba(79, 124, 255, 0.12);
-        transform: translateY(-1px);
+        background: rgba(79, 124, 255, 0.14);
+        transform: translateY(-2px);
       }
 
       &:active {
-        transform: translateY(0);
+        transform: translateY(-1px);
       }
 
       .icon {
-        width: 21px;
-        height: 21px;
+        width: 20px;
+        height: 20px;
         margin: 0;
         object-fit: contain;
         transition:
@@ -100,7 +100,6 @@ const socialTip = ref(defaultTip);
   }
 
   .tip {
-    display: block;
     margin-left: 12px;
     padding-left: 12px;
     border-left: 1px solid rgba(23, 32, 51, 0.16);
@@ -114,8 +113,8 @@ const socialTip = ref(defaultTip);
   @media (max-width: 840px) {
     width: fit-content;
     max-width: 100%;
-    justify-content: center;
-    padding: 0 10px;
+    justify-content: flex-start;
+    padding: 0 8px;
 
     .tip {
       display: none;

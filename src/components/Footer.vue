@@ -2,10 +2,8 @@
   <footer id="footer" :class="store.footerBlur ? 'blur' : null">
     <Transition name="fade" mode="out-in">
       <div v-if="!store.playerState || !store.playerLrcShow" class="power">
-        <span>
-          &copy; {{ fullYear }} &nbsp;Fancilonely&nbsp;&middot;&nbsp;Based on
-          <a href="https://github.com/imsyy/home" target="_blank">imsyy/home</a>
-        </span>
+        <!-- Edit this footer text to add ICP filing number or custom copyright text. -->
+        <span>© 2026 梦幻空白 · Based on imsyy/home</span>
       </div>
       <div v-else class="lrc">
         <Transition name="fade" mode="out-in">
@@ -23,40 +21,21 @@
 <script setup>
 import { MusicOne } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
-import config from "@/../package.json";
 
 const store = mainStore();
-const fullYear = new Date().getFullYear();
-
-// 加载配置数据
-// const siteStartDate = ref(import.meta.env.VITE_SITE_START);
-const startYear = ref(
-  import.meta.env.VITE_SITE_START?.length >= 4 ? 
-  import.meta.env.VITE_SITE_START.substring(0, 4) : null
-);
-const siteIcp = ref(import.meta.env.VITE_SITE_ICP);
-const siteAuthor = ref(import.meta.env.VITE_SITE_AUTHOR);
-const siteUrl = computed(() => {
-  const url = import.meta.env.VITE_SITE_URL;
-  if (!url) return "https://www.imsyy.top";
-  // 判断协议前缀
-  if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    return "//" + url;
-  }
-  return url;
-});
 </script>
 
 <style lang="scss" scoped>
 #footer {
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
-  height: 42px;
+  right: 0;
+  min-height: 42px;
   line-height: 42px;
   text-align: center;
-  z-index: 0;
+  z-index: 3;
   font-size: 14px;
   word-break: keep-all;
   white-space: nowrap;
@@ -70,17 +49,7 @@ const siteUrl = computed(() => {
 
     span {
       color: rgba(23, 32, 51, 0.82);
-    }
-
-    a {
-      color: #4f7cff;
-      text-decoration: none;
       font-weight: 600;
-
-      &:hover {
-        color: #2f5cff;
-        text-decoration: underline;
-      }
     }
   }
 
@@ -131,15 +100,11 @@ const siteUrl = computed(() => {
     }
   }
 
-  @media (max-width: 560px) {
-    .c-hidden {
-      display: none;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .hidden {
-      display: none;
+  @media (max-width: 720px) {
+    .power {
+      padding: 0 12px;
+      line-height: 1.3;
+      white-space: normal;
     }
   }
 }

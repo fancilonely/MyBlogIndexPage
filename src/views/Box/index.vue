@@ -4,30 +4,32 @@
       <close-one
         class="close"
         theme="filled"
-        size="28"
-        fill="#ffffff60"
+        size="26"
+        fill="rgba(23, 32, 51, 0.48)"
         v-show="closeShow"
         @click="store.boxOpenState = false"
       />
     </transition>
+
     <transition name="el-fade-in-linear">
       <setting-two
         class="setting"
         theme="filled"
-        size="28"
-        fill="#ffffff60"
+        size="26"
+        fill="rgba(23, 32, 51, 0.48)"
         v-show="closeShow"
-        @click="store.setOpenState = true"
+        @click="store.setOpenState = false"
       />
     </transition>
+
     <div class="content">
-      <!-- 可在此处自定义任意内容 -->
-      <TimeCapsule />
+      <TimeCapsule class="capsule-in-box" />
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { CloseOne, SettingTwo } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import TimeCapsule from "@/components/TimeCapsule.vue";
@@ -44,6 +46,7 @@ const closeShow = ref(false);
   max-width: 50%;
   position: relative;
   animation: fade 0.5s;
+  overflow: hidden;
 
   &:hover {
     transform: scale(1);
@@ -54,14 +57,16 @@ const closeShow = ref(false);
     position: absolute;
     top: 14px;
     right: 14px;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
+    z-index: 3;
+    cursor: pointer;
     transition:
       transform 0.3s,
       opacity 0.3s;
 
     &:hover {
-      transform: scale(1.2);
+      transform: scale(1.16);
     }
 
     &:active {
@@ -70,15 +75,21 @@ const closeShow = ref(false);
   }
 
   .setting {
-    right: 56px;
+    right: 52px;
   }
 
   .content {
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
     width: 100%;
     height: 100%;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .capsule-in-box {
+    width: 100%;
+    max-width: 520px;
   }
 }
 </style>
