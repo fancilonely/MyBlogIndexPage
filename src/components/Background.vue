@@ -84,12 +84,12 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .cover {
-  position: absolute;
+  position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
   transition: 0.25s;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
   background: #f4f6fb;
 

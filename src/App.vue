@@ -1,11 +1,11 @@
 <template>
+  <div id="page">
   <!-- 加载 -->
   <Loading />
   <!-- 壁纸 -->
   <Background @loadComplete="loadComplete" />
-  <!-- 轻量背景粒子 -->
+  <!-- 粒子 -->
   <FloatingParticles />
-  <!-- 主界面 -->
   <Transition name="fade" mode="out-in">
     <main id="main" v-if="store.imgLoadStatus">
       <div class="container" v-show="!store.backgroundShow">
@@ -27,12 +27,13 @@
       >
         <component :is="store.mobileOpenState ? CloseSmall : HamburgerButton" />
       </Icon>
-      <!-- 页脚 -->
-      <Transition name="fade" mode="out-in">
-        <Footer class="f-ter" v-show="!store.backgroundShow && !store.setOpenState" />
-      </Transition>
     </main>
   </Transition>
+  <!-- 页脚 -->
+  <Transition name="fade" mode="out-in">
+    <Footer v-show="!store.backgroundShow && !store.setOpenState" />
+  </Transition>
+  </div>
 </template>
 
 <script setup>
@@ -131,11 +132,8 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 #main {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
+  position: relative;
   z-index: 2;
   transform: scale(1.2);
   transition: transform 0.3s;
@@ -143,7 +141,7 @@ onBeforeUnmount(() => {
   animation-delay: 0.5s;
   .container {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     margin: 0 auto;
     padding: 0 0.5vw;
     .all {
@@ -232,12 +230,6 @@ onBeforeUnmount(() => {
         left: calc(50% - 25px);
       }
     }
-    .f-ter {
-      top: 675px; // 721px - 46px
-      @media (min-width: 391px) {
-        padding-left: 6px;
-      }
-    }
   }
   @media (max-width: 390px) {
     overflow-x: auto;
@@ -246,9 +238,6 @@ onBeforeUnmount(() => {
     }
     .menu {
       left: 167.5px; // 391px * 0.5 - 28px
-    }
-    .f-ter {
-      width: 391px;
     }
     @media (min-height: 721px) {
       overflow-y: hidden;
