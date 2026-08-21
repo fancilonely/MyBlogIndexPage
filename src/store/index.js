@@ -13,6 +13,7 @@ export const mainStore = defineStore("main", {
       musicOpenState: false, // 音乐面板开启状态
       backgroundShow: false, // 壁纸展示状态
       boxOpenState: false, // 盒子开启状态
+      activeRightPanel: "default", // 当前右侧显示内容
       mobileOpenState: false, // 移动端开启状态
       mobileFuncState: false, // 移动端功能区开启状态
       setOpenState: false, // 设置页面开启状态

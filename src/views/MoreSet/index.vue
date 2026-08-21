@@ -1,3 +1,4 @@
+<!-- src\views\MoreSet\index.vue -->
 <template>
   <div class="set" @mouseenter="closeShow = true" @mouseleave="closeShow = false" @click.stop>
     <transition name="el-fade-in-linear">

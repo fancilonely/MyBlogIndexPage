@@ -1,3 +1,4 @@
+<!-- src\components\Message.vue -->
 <template>
   <!-- 基本信息 -->
   <div class="message">
@@ -17,7 +18,24 @@
           <p class="portal-subtitle">已然遥远的空白幻想之城</p>
           <p class="portal-description">A quiet archive for projects, notes, and fragments.</p>
           <div class="tag-list">
-            <span v-for="tag in tags" :key="tag" class="tag-pill">{{ tag }}</span>
+            <span
+              class="tag-pill"
+              @click.stop="changePanel('projects')"
+            >
+              项目列表
+            </span>
+            <span
+              class="tag-pill"
+              @click.stop="changePanel('notes')"
+            >
+              技术笔记
+            </span>
+            <span
+              class="tag-pill"
+              @click.stop="changePanel('thoughts')"
+            >
+              所见所感
+            </span>
           </div>
         </div>
       </div>
@@ -45,11 +63,21 @@ import { mainStore } from "@/store";
 
 const store = mainStore();
 
-const tags = ["个人空间", "项目列表", "笔记一览", "见闻大全"];
-
+const changePanel = (panel) => {
+  if (store.getInnerWidth >= 721) {
+    store.boxOpenState = false;
+    store.activeRightPanel = panel;
+  }
+};
 // 主页站点 logo
 const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
 
+const openCapsule = () => {
+  if(store.getInnerWidth >= 721){
+    store.activeRightPanel="capsule";
+    store.boxOpenState=true;
+  }
+};
 // 切换右侧功能区：桌面端切换，移动端提示
 const changeBox = () => {
   if (store.getInnerWidth >= 721) {

@@ -1,3 +1,4 @@
+<!-- src\views\Main\Right.vue -->
 <template>
   <div :class="store.mobileOpenState ? 'right' : 'right hidden'">
     <!-- 移动端 Logo -->

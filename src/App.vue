@@ -1,3 +1,4 @@
+<!-- src\App.vue -->
 <template>
   <div id="page">
   <!-- 加载 -->
