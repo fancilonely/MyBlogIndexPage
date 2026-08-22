@@ -1,4 +1,3 @@
-<!-- src\views\Main\Right.vue -->
 <template>
   <div :class="store.mobileOpenState ? 'right' : 'right hidden'">
     <!-- 移动端 Logo -->
@@ -7,13 +6,14 @@
       <span class="sm">.{{ siteUrl[1] }}</span>
     </div>
     <!-- 功能区 -->
-    <Func />
+    <Box />
   </div>
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { mainStore } from "@/store";
-import Func from "@/views/Func/index.vue";
+import Box from "@/views/Box/index.vue";
 const store = mainStore();
 
 // 站点链接
@@ -31,9 +31,15 @@ const siteUrl = computed(() => {
 
 <style lang="scss" scoped>
 .right {
-  // flex: 1 0 0%;
-  width: 35%;
+  flex: 1 1 0;
+  width: 100%;
+  max-width: 520px;
+  min-width: 0;
+  height: 80%;
   margin-left: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   .logo {
     width: 100%;
     font-family: "Pacifico-Regular";
@@ -61,9 +67,13 @@ const siteUrl = computed(() => {
   @media (max-width: 720px) {
     margin-left: 0;
     width: 100%;
+    max-width: none;
+    height: 100%;
     &.hidden {
       display: none;
     }
   }
 }
 </style>
+
+

@@ -1,4 +1,3 @@
-<!-- src\components\MoreContent.vue -->
 <template>
   <GlassPanel :title="title">
     <div class="more-content">
@@ -19,14 +18,12 @@ defineProps({
 <style lang="scss" scoped>
 .more-content {
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
   box-sizing: border-box;
-  display:flex;
-  justify-content:center;
-  padding: 0.8rem 1rem 1rem;
-  overflow-y: auto;
   animation: fade 0.4s;
   color: #172033;
-  scrollbar-width: thin;
 }
 </style>

@@ -1,4 +1,3 @@
-<!-- src\components\Message.vue -->
 <template>
   <!-- 基本信息 -->
   <div class="message">
@@ -65,23 +64,26 @@ const store = mainStore();
 
 const changePanel = (panel) => {
   if (store.getInnerWidth >= 721) {
-    store.boxOpenState = false;
     store.activeRightPanel = panel;
+    store.boxOpenState = true;
   }
 };
 // 主页站点 logo
 const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO || "/images/icon/logo.png";
 
-const openCapsule = () => {
-  if(store.getInnerWidth >= 721){
-    store.activeRightPanel="capsule";
-    store.boxOpenState=true;
-  }
-};
 // 切换右侧功能区：桌面端切换，移动端提示
 const changeBox = () => {
   if (store.getInnerWidth >= 721) {
-    store.boxOpenState = !store.boxOpenState;
+    const capsuleIsOpen =
+      store.boxOpenState && store.activeRightPanel === "capsule";
+
+    if (capsuleIsOpen) {
+      store.activeRightPanel = "default";
+      store.boxOpenState = false;
+    } else {
+      store.activeRightPanel = "capsule";
+      store.boxOpenState = true;
+    }
   } else {
     ElMessage({
       message: "当前页面宽度不足以开启盒子",
@@ -346,3 +348,4 @@ const changeBox = () => {
   }
 }
 </style>
+

@@ -1,4 +1,3 @@
-<!-- src\views\Box\index.vue -->
 <template>
   <div
     class="box"
@@ -13,11 +12,14 @@
         theme="filled"
         size="26"
         fill="rgba(23, 32, 51, 0.48)"
-        v-show="closeShow"
-        @click="store.boxOpenState = false"
+        v-show="closeShow && store.boxOpenState"
+        @click="closePanel"
       />
     </transition>
-      <TimeCapsule />
+
+    <div class="right-panel">
+      <Func />
+    </div>
   </div>
 </template>
 
@@ -35,12 +37,17 @@ import {
   mainStore
 } from "@/store";
 
-import TimeCapsule from "@/components/TimeCapsule.vue";
+import Func from "@/views/Func/index.vue";
 
 
 const store = mainStore();
 
 const closeShow = ref(false);
+
+const closePanel = () => {
+  store.activeRightPanel = "default";
+  store.boxOpenState = false;
+};
 
 
 </script>
@@ -51,17 +58,25 @@ const closeShow = ref(false);
 
 
 .box {
-  flex:1 0 0%;
-  margin-left:0.75rem;
-  height:80%;
-  width:100%;
-  max-width:50%;
-  position:relative;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  animation:fade .5s;
-  overflow:hidden;
+  width: 100%;
+  height: 100%;
+  max-width: 520px;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fade 0.5s;
+  overflow: hidden;
+}
+
+.right-panel {
+  width: 100%;
+  height: 100%;
+  max-width: 520px;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
 }
 
 .close {
@@ -104,3 +119,4 @@ const closeShow = ref(false);
 
 
 </style>
+

@@ -1,4 +1,3 @@
-<!-- src\App.vue -->
 <template>
   <div id="page">
   <!-- 加载 -->
@@ -12,8 +11,7 @@
       <div class="container" v-show="!store.backgroundShow">
         <section class="all" v-show="!store.setOpenState">
           <MainLeft />
-          <MainRight v-show="!store.boxOpenState" />
-          <Box v-show="store.boxOpenState" />
+          <MainRight />
         </section>
         <section class="more" v-show="store.setOpenState" @click="store.setOpenState = false">
           <MoreSet />
@@ -48,7 +46,6 @@ import MainRight from "@/views/Main/Right.vue";
 import Background from "@/components/Background.vue";
 import FloatingParticles from "@/components/FloatingParticles.vue";
 import Footer from "@/components/Footer.vue";
-import Box from "@/views/Box/index.vue";
 import MoreSet from "@/views/MoreSet/index.vue";
 import cursorInit from "@/utils/cursor.js";
 import config from "@/../package.json";
@@ -76,6 +73,7 @@ watch(
   (value) => {
     if (value < 721) {
       store.boxOpenState = false;
+      store.activeRightPanel = "default";
       store.setOpenState = false;
     }
   },

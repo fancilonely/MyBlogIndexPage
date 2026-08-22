@@ -19,41 +19,29 @@ IGNORE_DIRS = {
     "txt",
 }
 
-
-IGNORE_EXTENSIONS = {
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".webp",
-    ".gif",
-    ".ico",
-    ".svg",
-    ".woff",
-    ".woff2",
-    ".ttf",
-    ".mp3",
-    ".mp4",
-    ".zip",
-    ".gz",
-}
+TARGET_EXTENSION = ".vue"
 
 
-TEXT_EXTENSIONS = {
-    ".js",
-    ".jsx",
-    ".ts",
-    ".tsx",
-    ".vue",
-    ".css",
-    ".scss",
-    ".html",
-    ".json",
-    ".md",
-    ".txt",
-    ".env",
-    ".yml",
-    ".yaml",
-}
+# ==============================
+# Helpers
+# ==============================
+
+def is_vue_file(filename):
+    return os.path.splitext(filename)[1].lower() == TARGET_EXTENSION
+
+
+def contains_vue_files(directory):
+    for current_root, dirs, files in os.walk(directory):
+        dirs[:] = [
+            directory_name
+            for directory_name in dirs
+            if directory_name not in IGNORE_DIRS
+        ]
+
+        if any(is_vue_file(filename) for filename in files):
+            return True
+
+    return False
 
 
 # ==============================
@@ -61,81 +49,62 @@ TEXT_EXTENSIONS = {
 # ==============================
 
 def generate_tree(root):
-
-    lines = []
+    lines = [os.path.basename(root)]
 
     for current_root, dirs, files in os.walk(root):
-
         dirs[:] = [
-            d for d in dirs
-            if d not in IGNORE_DIRS
+            directory_name
+            for directory_name in dirs
+            if directory_name not in IGNORE_DIRS
+            and contains_vue_files(
+                os.path.join(current_root, directory_name)
+            )
         ]
 
         level = current_root.replace(root, "").count(os.sep)
-
         indent = "    " * level
 
-        folder_name = os.path.basename(current_root)
+        if level > 0:
+            folder_name = os.path.basename(current_root)
+            lines.append(f"{indent}├── {folder_name}/")
 
-        if level == 0:
-            lines.append(folder_name)
-        else:
-            lines.append(
-                f"{indent}├── {folder_name}/"
-            )
+        vue_files = sorted(
+            filename
+            for filename in files
+            if is_vue_file(filename)
+        )
 
-        for file in files:
-            ext = os.path.splitext(file)[1].lower()
+        file_indent = "    " * (level + 1)
 
-            if ext in IGNORE_EXTENSIONS:
-                continue
-
-            file_indent = "    " * (level + 1)
-
-            lines.append(
-                f"{file_indent}├── {file}"
-            )
+        for filename in vue_files:
+            lines.append(f"{file_indent}├── {filename}")
 
     return "\n".join(lines)
 
 
-
 # ==============================
-# Export files
+# Export Vue files
 # ==============================
 
 def export_files(root):
-
     content = []
 
     for current_root, dirs, files in os.walk(root):
-
         dirs[:] = [
-            d for d in dirs
-            if d not in IGNORE_DIRS
+            directory_name
+            for directory_name in dirs
+            if directory_name not in IGNORE_DIRS
         ]
 
-        for file in files:
+        vue_files = sorted(
+            filename
+            for filename in files
+            if is_vue_file(filename)
+        )
 
-            ext = os.path.splitext(file)[1].lower()
-
-            if ext in IGNORE_EXTENSIONS:
-                continue
-
-            if ext not in TEXT_EXTENSIONS:
-                continue
-
-
-            path = os.path.join(
-                current_root,
-                file
-            )
-
-            relative_path = os.path.relpath(
-                path,
-                root
-            )
-
+        for filename in vue_files:
+            path = os.path.join(current_root, filename)
+            relative_path = os.path.relpath(path, root)
 
             content.append(
                 "\n\n"
@@ -146,28 +115,14 @@ def export_files(root):
                 + "\n"
             )
 
-
             try:
+                with open(path, "r", encoding="utf-8") as file:
+                    content.append(file.read())
 
-                with open(
-                    path,
-                    "r",
-                    encoding="utf-8"
-                ) as f:
-
-                    content.append(
-                        f.read()
-                    )
-
-            except Exception as e:
-
-                content.append(
-                    f"[READ ERROR] {e}"
-                )
-
+            except Exception as error:
+                content.append(f"[READ ERROR] {error}")
 
     return "\n".join(content)
-
 
 
 # ==============================
@@ -175,95 +130,32 @@ def export_files(root):
 # ==============================
 
 def main():
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    os.makedirs(
-        OUTPUT_DIR,
-        exist_ok=True
-    )
-
-
-    timestamp = datetime.now().strftime(
-        "%Y%m%d_%H%M%S"
-    )
-
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     output_file = os.path.join(
         OUTPUT_DIR,
-        f"project_snapshot_{timestamp}.txt"
+        f"vue_snapshot_{timestamp}.txt",
     )
 
+    with open(output_file, "w", encoding="utf-8") as file:
+        file.write("VUE PROJECT SNAPSHOT\n")
+        file.write("=" * 80 + "\n")
 
-    with open(
-        output_file,
-        "w",
-        encoding="utf-8"
-    ) as f:
+        file.write(f"Generated Time: {datetime.now()}\n")
+        file.write(f"Project Root: {PROJECT_ROOT}\n")
 
+        file.write("\n\nVUE FILE STRUCTURE\n")
+        file.write("=" * 80 + "\n")
+        file.write(generate_tree(PROJECT_ROOT))
 
-        f.write(
-            "PROJECT SNAPSHOT\n"
-        )
+        file.write("\n\n\nVUE FILE CONTENT\n")
+        file.write("=" * 80 + "\n")
+        file.write(export_files(PROJECT_ROOT))
 
-        f.write(
-            "=" * 80
-            + "\n"
-        )
-
-
-        f.write(
-            f"Generated Time: "
-            f"{datetime.now()}\n"
-        )
-
-        f.write(
-            f"Project Root: "
-            f"{PROJECT_ROOT}\n"
-        )
-
-
-        f.write(
-            "\n\n"
-            "PROJECT STRUCTURE\n"
-        )
-
-        f.write(
-            "=" * 80
-            + "\n"
-        )
-
-        f.write(
-            generate_tree(
-                PROJECT_ROOT
-            )
-        )
-
-
-        f.write(
-            "\n\n\n"
-            "SOURCE FILE CONTENT\n"
-        )
-
-        f.write(
-            "=" * 80
-            + "\n"
-        )
-
-
-        f.write(
-            export_files(
-                PROJECT_ROOT
-            )
-        )
-
-
-    print(
-        "Snapshot generated:"
-    )
-
-    print(
-        output_file
-    )
-
+    print("Vue snapshot generated:")
+    print(output_file)
 
 
 if __name__ == "__main__":

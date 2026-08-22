@@ -1,4 +1,3 @@
-<!-- src\components\ProjectList.vue -->
 <template>
   <div class="project-list">
 
@@ -125,26 +124,18 @@ url:"https://github.com/fancilonely/MyBlogIndexPage"
 
 
 .project-list {
-
-  width:100%;
-
-  max-width:520px;
-
-  display:grid;
-
-  grid-template-columns:
-  repeat(2,minmax(160px,1fr));
-
-  gap:16px;
-
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 
 
 .project-card {
-
-
-  min-height:120px;
+  min-width: 0;
+  min-height: 120px;
 
   padding:16px;
 
@@ -365,3 +356,5 @@ url:"https://github.com/fancilonely/MyBlogIndexPage"
 }
 
 </style>
+
+
