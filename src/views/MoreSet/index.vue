@@ -1,6 +1,12 @@
-<!-- src\views\MoreSet\index.vue -->
+<!-- src/views/MoreSet/index.vue -->
+
 <template>
-  <div class="set" @mouseenter="closeShow = true" @mouseleave="closeShow = false" @click.stop>
+  <div
+    class="set"
+    @mouseenter="closeShow = true"
+    @mouseleave="closeShow = false"
+    @click.stop
+  >
     <transition name="el-fade-in-linear">
       <close-one
         class="close"
@@ -11,41 +17,94 @@
         @click="store.setOpenState = false"
       />
     </transition>
+
     <el-row :gutter="40">
-      <el-col :span="12" class="left">
+      <el-col
+        :span="12"
+        class="left"
+      >
         <div class="logo text-hidden">
-          <span class="bg">{{ siteUrl[0] }}</span>
-          <span class="sm">.{{ siteUrl[1] }}</span>
+          <span class="bg">
+            {{ siteUrl[0] }}
+          </span>
+
+          <span class="sm">
+            .{{ siteUrl[1] }}
+          </span>
         </div>
+
         <div class="version">
-          <div class="num">v&nbsp;{{ config.version }}</div>
-          <el-tooltip content="Github 源代码仓库" placement="right" :show-arrow="false">
-            <github-one class="github" theme="outline" size="24" @click="jumpTo(config.github)" />
+          <div class="num">
+            v&nbsp;{{ config.version }}
+          </div>
+
+          <el-tooltip
+            content="Github 源代码仓库"
+            placement="right"
+            :show-arrow="false"
+          >
+            <github-one
+              class="github"
+              theme="outline"
+              size="24"
+              @click="jumpTo(config.github)"
+            />
           </el-tooltip>
         </div>
+
         <el-card class="update">
           <template #header>
             <div class="card-header">
               <span>更新日志</span>
             </div>
           </template>
+
           <div class="upnote">
-            <div v-for="item in upData.new" :key="item" class="uptext">
-              <add-one theme="outline" size="22" />
+            <div
+              v-for="item in upData.new"
+              :key="item"
+              class="uptext"
+            >
+              <add-one
+                theme="outline"
+                size="22"
+              />
+
               {{ item }}
             </div>
-            <div v-for="item in upData.fix" :key="item" class="uptext">
-              <bug theme="outline" size="22" />
+
+            <div
+              v-for="item in upData.fix"
+              :key="item"
+              class="uptext"
+            >
+              <bug
+                theme="outline"
+                size="22"
+              />
+
               {{ item }}
             </div>
           </div>
         </el-card>
       </el-col>
-      <el-col :span="12" class="right">
+
+      <el-col
+        :span="12"
+        class="right"
+      >
         <div class="title">
-          <setting-two theme="filled" size="28" fill="#ffffff60" />
-          <span class="name">全局设置</span>
+          <setting-two
+            theme="filled"
+            size="28"
+            fill="#ffffff60"
+          />
+
+          <span class="name">
+            全局设置
+          </span>
         </div>
+
         <Set />
       </el-col>
     </el-row>
@@ -53,27 +112,50 @@
 </template>
 
 <script setup>
-import { CloseOne, SettingTwo, GithubOne, AddOne, Bug } from "@icon-park/vue-next";
-import { mainStore } from "@/store";
+import {
+  CloseOne,
+  SettingTwo,
+  GithubOne,
+  AddOne,
+  Bug,
+} from "@icon-park/vue-next";
+
+import {
+  mainStore,
+} from "@/store";
+
 import Set from "@/components/Set.vue";
+
 import config from "@/../package.json";
 
 const store = mainStore();
+
 const closeShow = ref(false);
 
-// 站点链接
 const siteUrl = computed(() => {
-  const url = import.meta.env.VITE_SITE_URL;
-  if (!url) return "imsyy.top".split(".");
-  // 判断协议前缀
-  if (url.startsWith("http://") || url.startsWith("https://")) {
-    const urlFormat = url.replace(/^(https?:\/\/)/, "");
+  const url =
+    import.meta.env.VITE_SITE_URL;
+
+  if (!url) {
+    return "imsyy.top".split(".");
+  }
+
+  if (
+    url.startsWith("http://") ||
+    url.startsWith("https://")
+  ) {
+    const urlFormat =
+      url.replace(
+        /^(https?:\/\/)/,
+        "",
+      );
+
     return urlFormat.split(".");
   }
+
   return url.split(".");
 });
 
-// 更新日志
 const upData = reactive({
   new: [
     "采用 Vue 进行重构",
@@ -81,138 +163,222 @@ const upData = reactive({
     "壁纸支持个性化设置",
     "音乐播放器支持音量控制",
   ],
-  fix: ["修复天气 API", "时光胶囊显示错误", "移动端动画及细节", "图标更换为 IconPark"],
+
+  fix: [
+    "修复天气 API",
+    "时光胶囊显示错误",
+    "移动端动画及细节",
+    "图标更换为 IconPark",
+  ],
 });
 
-// 跳转源代码仓库
 const jumpTo = (url) => {
-  window.open(url);
+  const opened = window.open(
+    url,
+    "_blank",
+    "noopener,noreferrer",
+  );
+
+  if (opened) {
+    opened.opener = null;
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .set {
   position: absolute;
+
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    );
+
   width: 80%;
   height: 80%;
-  background: rgb(255 255 255 / 40%);
-  border-radius: 6px;
+
   padding: 40px;
+
+  background:
+    rgb(
+      255 255 255 / 40%
+    );
+
+  border-radius: 6px;
 
   .close {
     position: absolute;
+
     top: 14px;
     right: 14px;
+
     width: 28px;
     height: 28px;
 
     &:hover {
-      transform: scale(1.2);
+      transform:
+        scale(1.2);
     }
 
     &:active {
-      transform: scale(1);
+      transform:
+        scale(1);
     }
   }
 
   .el-row {
     height: 100%;
+
     flex-wrap: nowrap;
 
     .left {
       height: 100%;
-      padding-left: 40px !important;
+
+      padding-left:
+        40px !important;
+
       padding-bottom: 20px;
+
       display: flex;
+
       flex-direction: column;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
 
       .logo {
-        transform: translateY(-8%);
-        font-family: "Pacifico-Regular";
-        padding-left: 22px;
         width: 100%;
         height: 260px;
+
         min-height: 140px;
+
+        padding-left: 22px;
+
+        transform:
+          translateY(-8%);
+
+        font-family:
+          "Pacifico-Regular";
+
         .bg {
           font-size: 5rem;
         }
 
         .sm {
           margin-left: 6px;
+
           font-size: 2rem;
         }
 
-        @media (max-width: 990px) {
+        @media (
+          max-width: 990px
+        ) {
           .bg {
-            font-size: 4.5rem;
+            font-size:
+              4.5rem;
           }
+
           .sm {
-            font-size: 1.7rem;
+            font-size:
+              1.7rem;
           }
         }
-        @media (max-width: 825px) {
+
+        @media (
+          max-width: 825px
+        ) {
           .bg {
-            font-size: 3.8rem;
+            font-size:
+              3.8rem;
           }
+
           .sm {
-            font-size: 1.3rem;
+            font-size:
+              1.3rem;
           }
         }
       }
 
       .version {
         display: flex;
-        flex-direction: row;
-        align-items: center;
+
+        flex-direction:
+          row;
+
+        align-items:
+          center;
 
         .num {
           font-size: 2rem;
-          font-family: "Pacifico-Regular";
+
+          font-family:
+            "Pacifico-Regular";
         }
 
         .github {
           width: 24px;
           height: 24px;
+
           margin-left: 12px;
+
           margin-top: 6px;
 
           &:hover {
-            transform: scale(1.2);
+            transform:
+              scale(1.2);
           }
         }
       }
 
       .update {
         margin-top: 30px;
+
         height: 100%;
 
-        :deep(.el-card__body) {
+        :deep(
+          .el-card__body
+        ) {
           height: 100%;
 
           .upnote {
+            height:
+              calc(
+                100% - 56px
+              );
+
             padding: 20px;
-            height: calc(100% - 56px);
+
             overflow-y: auto;
 
             .uptext {
               display: flex;
-              flex-direction: row;
-              align-items: center;
-              padding-bottom: 16px;
 
-              &:nth-last-of-type(1) {
+              flex-direction:
+                row;
+
+              align-items:
+                center;
+
+              padding-bottom:
+                16px;
+
+              &:nth-last-of-type(
+                1
+              ) {
                 padding: 0;
               }
 
               .i-icon {
                 width: 22px;
+
                 height: 22px;
-                margin-right: 8px;
+
+                margin-right:
+                  8px;
               }
             }
           }
@@ -222,22 +388,38 @@ const jumpTo = (url) => {
 
     .right {
       height: 100%;
-      padding-right: 40px !important;
+
+      padding-right:
+        40px !important;
+
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+
+      flex-direction:
+        column;
+
+      justify-content:
+        center;
 
       .title {
         display: flex;
+
         align-items: center;
-        flex-direction: row;
+
+        flex-direction:
+          row;
+
+        margin-bottom:
+          16px;
+
         font-size: 18px;
-        margin-bottom: 16px;
 
         .i-icon {
           width: 28px;
+
           height: 28px;
-          margin-right: 6px;
+
+          margin-right:
+            6px;
         }
       }
     }

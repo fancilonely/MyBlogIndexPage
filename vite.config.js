@@ -25,6 +25,10 @@ export default ({ mode }) =>
         workbox: {
           skipWaiting: true,
           clientsClaim: true,
+          cleanupOutdatedCaches: true,
+          navigateFallbackDenylist: [
+            /^\/api(?:\/|$)/,
+          ],
           runtimeCaching: [
             {
               urlPattern: /(.*?)\.(js|css|woff2|woff|ttf)/, // js / css 静态资源缓存
@@ -34,8 +38,8 @@ export default ({ mode }) =>
               },
             },
             {
-              urlPattern: /(.*?)\.(png|jpe?g|svg|gif|bmp|psd|tiff|tga|eps)/, // 图片缓存
-              handler: "CacheFirst",
+              urlPattern: /(.*?)\.(png|jpe?g|webp|svg|gif|bmp|psd|tiff|tga|eps)/, // 图片缓存
+              handler: "StaleWhileRevalidate",
               options: {
                 cacheName: "image-cache",
               },
@@ -113,6 +117,7 @@ export default ({ mode }) =>
       },
     },
     build: {
+      sourcemap: false,
       minify: "terser",
       terserOptions: {
         compress: {

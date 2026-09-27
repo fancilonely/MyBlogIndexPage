@@ -6,9 +6,14 @@ from datetime import datetime
 # Configuration
 # ==============================
 
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(
+    os.path.abspath(__file__)
+)
 
-OUTPUT_DIR = os.path.join(PROJECT_ROOT, "txt")
+OUTPUT_DIR = os.path.join(
+    PROJECT_ROOT,
+    "txt",
+)
 
 IGNORE_DIRS = {
     "node_modules",
@@ -19,29 +24,61 @@ IGNORE_DIRS = {
     "txt",
 }
 
-TARGET_EXTENSION = ".vue"
+# 现在同时扫描 Vue 和 JavaScript
+TARGET_EXTENSIONS = {
+    ".vue",
+    ".js",
+}
 
 
 # ==============================
 # Helpers
 # ==============================
 
-def is_vue_file(filename):
-    return os.path.splitext(filename)[1].lower() == TARGET_EXTENSION
+def is_target_file(filename):
+    extension = os.path.splitext(
+        filename
+    )[1].lower()
+
+    return extension in TARGET_EXTENSIONS
 
 
-def contains_vue_files(directory):
-    for current_root, dirs, files in os.walk(directory):
-        dirs[:] = [
+def contains_target_files(directory):
+    """
+    判断一个目录及其子目录中
+    是否存在 .vue / .js 文件。
+
+    只用于生成精简目录树。
+    """
+
+    for current_root, dirs, files in os.walk(
+        directory
+    ):
+        dirs[:] = sorted(
             directory_name
             for directory_name in dirs
             if directory_name not in IGNORE_DIRS
-        ]
+        )
 
-        if any(is_vue_file(filename) for filename in files):
+        if any(
+            is_target_file(filename)
+            for filename in files
+        ):
             return True
 
     return False
+
+
+def normalize_path(path):
+    """
+    snapshot 中统一使用 /
+    避免 Windows 路径出现大量反斜杠。
+    """
+
+    return path.replace(
+        os.sep,
+        "/",
+    )
 
 
 # ==============================
@@ -49,80 +86,201 @@ def contains_vue_files(directory):
 # ==============================
 
 def generate_tree(root):
-    lines = [os.path.basename(root)]
+    lines = [
+        os.path.basename(root)
+    ]
 
-    for current_root, dirs, files in os.walk(root):
-        dirs[:] = [
+    for current_root, dirs, files in os.walk(
+        root
+    ):
+        # 只保留：
+        # 1. 非忽略目录
+        # 2. 内部确实存在目标文件的目录
+        dirs[:] = sorted(
             directory_name
             for directory_name in dirs
-            if directory_name not in IGNORE_DIRS
-            and contains_vue_files(
-                os.path.join(current_root, directory_name)
+            if (
+                directory_name
+                not in IGNORE_DIRS
+                and contains_target_files(
+                    os.path.join(
+                        current_root,
+                        directory_name,
+                    )
+                )
             )
-        ]
-
-        level = current_root.replace(root, "").count(os.sep)
-        indent = "    " * level
-
-        if level > 0:
-            folder_name = os.path.basename(current_root)
-            lines.append(f"{indent}├── {folder_name}/")
-
-        vue_files = sorted(
-            filename
-            for filename in files
-            if is_vue_file(filename)
         )
 
-        file_indent = "    " * (level + 1)
+        level = os.path.relpath(
+            current_root,
+            root,
+        ).count(os.sep)
 
-        for filename in vue_files:
-            lines.append(f"{file_indent}├── {filename}")
+        # root 自己特殊处理
+        if current_root == root:
+            level = 0
+        else:
+            level += 1
+
+        if current_root != root:
+            folder_indent = (
+                "    " * (level - 1)
+            )
+
+            folder_name = os.path.basename(
+                current_root
+            )
+
+            lines.append(
+                f"{folder_indent}"
+                f"├── {folder_name}/"
+            )
+
+        target_files = sorted(
+            filename
+            for filename in files
+            if is_target_file(filename)
+        )
+
+        file_indent = (
+            "    " * level
+        )
+
+        for filename in target_files:
+            lines.append(
+                f"{file_indent}"
+                f"├── {filename}"
+            )
 
     return "\n".join(lines)
 
 
 # ==============================
-# Export Vue files
+# Export source files
 # ==============================
 
 def export_files(root):
     content = []
 
-    for current_root, dirs, files in os.walk(root):
+    target_paths = []
+
+    # 先统一收集所有目标文件
+    for current_root, dirs, files in os.walk(
+        root
+    ):
+        dirs[:] = sorted(
+            directory_name
+            for directory_name in dirs
+            if directory_name not in IGNORE_DIRS
+        )
+
+        for filename in files:
+            if not is_target_file(
+                filename
+            ):
+                continue
+
+            path = os.path.join(
+                current_root,
+                filename,
+            )
+
+            target_paths.append(
+                path
+            )
+
+    # 保证每次 snapshot 顺序稳定
+    target_paths.sort(
+        key=lambda path:
+        normalize_path(
+            os.path.relpath(
+                path,
+                root,
+            )
+        ).lower()
+    )
+
+    for path in target_paths:
+        relative_path = normalize_path(
+            os.path.relpath(
+                path,
+                root,
+            )
+        )
+
+        content.append(
+            "\n\n"
+            + "=" * 80
+            + "\n"
+            + f"FILE: {relative_path}\n"
+            + "=" * 80
+            + "\n"
+        )
+
+        try:
+            with open(
+                path,
+                "r",
+                encoding="utf-8",
+            ) as file:
+                content.append(
+                    file.read()
+                )
+
+        except UnicodeDecodeError:
+            try:
+                with open(
+                    path,
+                    "r",
+                    encoding="utf-8-sig",
+                ) as file:
+                    content.append(
+                        file.read()
+                    )
+
+            except Exception as error:
+                content.append(
+                    "[READ ERROR] "
+                    f"{error}"
+                )
+
+        except Exception as error:
+            content.append(
+                "[READ ERROR] "
+                f"{error}"
+            )
+
+    return "\n".join(content)
+
+
+# ==============================
+# Statistics
+# ==============================
+
+def count_target_files(root):
+    counts = {
+        ".vue": 0,
+        ".js": 0,
+    }
+
+    for current_root, dirs, files in os.walk(
+        root
+    ):
         dirs[:] = [
             directory_name
             for directory_name in dirs
             if directory_name not in IGNORE_DIRS
         ]
 
-        vue_files = sorted(
-            filename
-            for filename in files
-            if is_vue_file(filename)
-        )
+        for filename in files:
+            extension = os.path.splitext(
+                filename
+            )[1].lower()
 
-        for filename in vue_files:
-            path = os.path.join(current_root, filename)
-            relative_path = os.path.relpath(path, root)
+            if extension in counts:
+                counts[extension] += 1
 
-            content.append(
-                "\n\n"
-                + "=" * 80
-                + "\n"
-                + f"FILE: {relative_path}\n"
-                + "=" * 80
-                + "\n"
-            )
-
-            try:
-                with open(path, "r", encoding="utf-8") as file:
-                    content.append(file.read())
-
-            except Exception as error:
-                content.append(f"[READ ERROR] {error}")
-
-    return "\n".join(content)
+    return counts
 
 
 # ==============================
@@ -130,32 +288,131 @@ def export_files(root):
 # ==============================
 
 def main():
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(
+        OUTPUT_DIR,
+        exist_ok=True,
+    )
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime(
+        "%Y%m%d_%H%M%S"
+    )
 
     output_file = os.path.join(
         OUTPUT_DIR,
-        f"vue_snapshot_{timestamp}.txt",
+        f"project_snapshot_{timestamp}.txt",
     )
 
-    with open(output_file, "w", encoding="utf-8") as file:
-        file.write("VUE PROJECT SNAPSHOT\n")
-        file.write("=" * 80 + "\n")
+    counts = count_target_files(
+        PROJECT_ROOT
+    )
 
-        file.write(f"Generated Time: {datetime.now()}\n")
-        file.write(f"Project Root: {PROJECT_ROOT}\n")
+    with open(
+        output_file,
+        "w",
+        encoding="utf-8",
+    ) as file:
+        file.write(
+            "VUE + JAVASCRIPT PROJECT SNAPSHOT\n"
+        )
 
-        file.write("\n\nVUE FILE STRUCTURE\n")
-        file.write("=" * 80 + "\n")
-        file.write(generate_tree(PROJECT_ROOT))
+        file.write(
+            "=" * 80 + "\n"
+        )
 
-        file.write("\n\n\nVUE FILE CONTENT\n")
-        file.write("=" * 80 + "\n")
-        file.write(export_files(PROJECT_ROOT))
+        file.write(
+            f"Generated Time: "
+            f"{datetime.now()}\n"
+        )
 
-    print("Vue snapshot generated:")
-    print(output_file)
+        file.write(
+            f"Project Root: "
+            f"{PROJECT_ROOT}\n"
+        )
+
+        file.write(
+            "\nIncluded Extensions:\n"
+        )
+
+        file.write(
+            "  - .vue\n"
+        )
+
+        file.write(
+            "  - .js\n"
+        )
+
+        file.write(
+            "\nFile Count:\n"
+        )
+
+        file.write(
+            f"  Vue: "
+            f"{counts['.vue']}\n"
+        )
+
+        file.write(
+            f"  JavaScript: "
+            f"{counts['.js']}\n"
+        )
+
+        file.write(
+            f"  Total: "
+            f"{sum(counts.values())}\n"
+        )
+
+        file.write(
+            "\n\nPROJECT FILE STRUCTURE\n"
+        )
+
+        file.write(
+            "=" * 80 + "\n"
+        )
+
+        file.write(
+            generate_tree(
+                PROJECT_ROOT
+            )
+        )
+
+        file.write(
+            "\n\n\nPROJECT FILE CONTENT\n"
+        )
+
+        file.write(
+            "=" * 80 + "\n"
+        )
+
+        file.write(
+            export_files(
+                PROJECT_ROOT
+            )
+        )
+
+    print()
+    print(
+        "Project snapshot generated:"
+    )
+
+    print(
+        output_file
+    )
+
+    print()
+
+    print(
+        f"Vue files: "
+        f"{counts['.vue']}"
+    )
+
+    print(
+        f"JavaScript files: "
+        f"{counts['.js']}"
+    )
+
+    print(
+        f"Total files: "
+        f"{sum(counts.values())}"
+    )
 
 
 if __name__ == "__main__":

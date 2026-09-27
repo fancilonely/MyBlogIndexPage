@@ -75,9 +75,29 @@ const siteIcon = {
 // 链接跳转
 const jumpLink = (data) => {
   if (data.name === "音乐" && store.musicClick) {
-    if (typeof $openList === "function") $openList();
+    if (typeof window.$openList === "function") {
+      window.$openList();
+    }
   } else {
-    window.open(data.link, "_blank");
+    try {
+      const url = new URL(data.link);
+
+      if (!["https:", "http:"].includes(url.protocol)) {
+        return;
+      }
+
+      const opened = window.open(
+        url.href,
+        "_blank",
+        "noopener,noreferrer",
+      );
+
+      if (opened) {
+        opened.opener = null;
+      }
+    } catch {
+      // Ignore malformed configured links.
+    }
   }
 };
 

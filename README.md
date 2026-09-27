@@ -67,13 +67,13 @@ Example server structure:
 
 The homepage uses a single local background image.
 
-Expected background file name: `background1.jpg`
+Expected background file name: `background1.webp`
 
-Place `background1.jpg` at:
+Place `background1.webp` at:
 
-`public/images/background1.jpg`
+`public/images/background1.webp`
 
-To replace the homepage background, replace `background1.jpg` with another image using the same filename.
+To replace the homepage background, replace `background1.webp` with another image using the same filename.
 
 ## Music Configuration
 
@@ -261,11 +261,8 @@ const siteIcon = {
 
 ### 天气
 
-天气及地区获取需要 `高德开放平台` 相关 API
-
-- 前往 [高德开放平台控制台](https://console.amap.com/dev/index) 创建一个 `Web 服务` 类型的 `Key`，并将 `Key` 填入 `.env` 中的 `VITE_WEATHER_KEY` 中
-
-也可自行更换其他方式
+天气由同源 `/api/weather.php` 代理提供。请仅在服务器环境中设置
+`WEATHERAPI_KEY`，不要使用 `VITE_` 前缀，也不要把真实密钥写入仓库或前端构建。
 
 ### 音乐
 

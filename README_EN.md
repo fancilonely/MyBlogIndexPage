@@ -67,13 +67,13 @@ Example server structure:
 
 The homepage uses a single local background image.
 
-Expected background file name: `background1.jpg`
+Expected background file name: `background1.webp`
 
-Place `background1.jpg` at:
+Place `background1.webp` at:
 
-`public/images/background1.jpg`
+`public/images/background1.webp`
 
-To replace the homepage background, replace `background1.jpg` with another image using the same filename.
+To replace the homepage background, replace `background1.webp` with another image using the same filename.
 
 ## Music Configuration
 

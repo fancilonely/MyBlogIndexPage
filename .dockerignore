@@ -6,6 +6,9 @@ docker-compose*
 .git
 .github
 .gitignore
+.env
+.env.*
+!.env.example
 README.md
 LICENSE
 .vscode
@@ -13,3 +16,6 @@ dist
 build
 images
 script
+snapshot.py
+weather.php
+*.zip

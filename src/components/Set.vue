@@ -3,7 +3,7 @@
     <el-collapse class="collapse" v-model="activeName" accordion>
       <el-collapse-item title="首页背景" name="1">
         <div class="bg-set">
-          <p>首页背景固定为 <code>public/images/background1.jpg</code>。</p>
+          <p>首页背景固定为 <code>public/images/background1.webp</code>。</p>
           <p>如需更换，请替换此文件并保留相同文件名。</p>
         </div>
       </el-collapse-item>
@@ -101,13 +101,6 @@ const {
 // 默认选中项
 const activeName = ref("1");
 
-// 背景固定为 background1.jpg
-const radioChange = () => {
-  ElMessage({
-    message: "首页背景已固定为 background1.jpg",
-    grouping: true,
-  });
-};
 </script>
 
 <style lang="scss" scoped>

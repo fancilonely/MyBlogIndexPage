@@ -1,79 +1,104 @@
 <template>
-  <div :class="store.mobileOpenState ? 'right' : 'right hidden'">
-    <!-- 移动端 Logo -->
-    <div class="logo text-hidden" @click="store.mobileFuncState = !store.mobileFuncState">
-      <span class="bg">{{ siteUrl[0] }}</span>
-      <span class="sm">.{{ siteUrl[1] }}</span>
-    </div>
-    <!-- 功能区 -->
-    <Box />
+  <!--
+    桌面端：
+    Right 始终存在。
+
+    手机版：
+    只有 mobileOpenState === true
+    才真正创建 Right。
+
+    因此手机版关闭右页以后，
+    上一个页面的 DOM 会被彻底销毁。
+  -->
+  <div
+    v-if="shouldRenderRight"
+    class="right"
+  >
+    <Box
+      :key="mobilePanelKey"
+    />
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import { mainStore } from "@/store";
+
+import {
+  mainStore,
+} from "@/store";
+
 import Box from "@/views/Box/index.vue";
+
 const store = mainStore();
 
-// 站点链接
-const siteUrl = computed(() => {
-  const url = import.meta.env.VITE_SITE_URL;
-  if (!url) return "imsyy.top".split(".");
-  // 判断协议前缀
-  if (url.startsWith("http://") || url.startsWith("https://")) {
-    const urlFormat = url.replace(/^(https?:\/\/)/, "");
-    return urlFormat.split(".");
-  }
-  return url.split(".");
-});
+/*
+  桌面：
+  永远显示 Right。
+
+  手机：
+  只在用户明确打开某个右页时创建。
+*/
+const shouldRenderRight =
+  computed(() => {
+    if (
+      store.getInnerWidth >= 721
+    ) {
+      return true;
+    }
+
+    return store.mobileOpenState;
+  });
+
+/*
+  手机版每个界面使用独立 key。
+
+  即使以后存在某种程序化切换，
+  Vue 也会直接创建新的 Box，
+  不复用上一页实例。
+*/
+const mobilePanelKey =
+  computed(() => {
+    if (
+      store.getInnerWidth >= 721
+    ) {
+      return "desktop-right";
+    }
+
+    return `mobile-${store.activeRightPanel}`;
+  });
 </script>
 
 <style lang="scss" scoped>
 .right {
   flex: 1 1 0;
+
   width: 100%;
   max-width: 520px;
   min-width: 0;
+
   height: 80%;
+
   margin-left: 0.75rem;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
-  .logo {
-    width: 100%;
-    font-family: "Pacifico-Regular";
-    font-size: 2.25rem;
-    position: fixed;
-    top: 6%;
-    left: 0;
-    text-align: center;
-    transition: transform 0.3s;
-    animation: fade 0.5s;
-    &:active {
-      transform: scale(0.95);
-    }
-    @media (min-width: 721px) {
-      display: none;
-    }
-    @media (max-height: 720px) {
-      width: calc(100% + 6px);
-      top: 43.26px; // 721px * 0.06
-    }
-    @media (max-width: 390px) {
-        width: 391px;
-    }
-  }
+
   @media (max-width: 720px) {
     margin-left: 0;
+
     width: 100%;
     max-width: none;
+
     height: 100%;
-    &.hidden {
-      display: none;
-    }
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
   }
 }
 </style>
-
-
